@@ -1,0 +1,82 @@
+Multiclass Image Classification with Unknown Detection
+📌 About the Project
+
+I developed this project to solve a common problem in image classification systems — forced misclassification.
+Most models predict an image as one of the trained classes even when the image does not belong to any of them.
+
+To solve this, I built a multiclass image classification model with an explicit UNKNOWN class.
+The model can correctly classify cats, dogs, and horses, and it predicts UNKNOWN for any image that does not belong to these classes, such as humans, vehicles, or objects.
+
+🎯 Motivation
+
+While testing basic classifiers, I noticed that images like a teapot or a human face were being incorrectly classified as animals.
+Instead of using confidence thresholds, I decided to train the model with an additional UNKNOWN class so it can learn to reject unrelated images.
+
+This approach makes the model more realistic and production-ready.
+
+#How I Built the Model
+
+I used transfer learning with a pre-trained MobileNetV2 model.
+The base model was trained on ImageNet, which helped extract strong visual features.
+I froze the base layers and added custom classification layers on top.
+I trained the model on four classes:
+
+Cats
+Dogs
+Horses
+Unknown
+
+The UNKNOWN class contains images that do not belong to any animal category.
+
+#Model Performance
+
+Training Accuracy: ~90%
+Validation Accuracy: ~85%
+Correctly identifies:
+Animal images → Cat, Dog, Horse
+Non-animal images → UNKNOWN
+The model no longer forces unrelated images into known classes.
+
+#🚀 Deployment
+🔗 Live Application:
+👉 multiclass-image-classification-c8ccgekd37syxs4aztpqgt
+.streamlit.app
+After training, I deployed the model using Streamlit Cloud.
+The web application allows users to:
+
+Upload an image
+View the predicted class
+See confidence scores
+Understand how the model behaves for unknown inputs
+
+#🛠 Tools & Technologies Used
+
+Python
+TensorFlow & Keras
+MobileNetV2
+Streamlit
+NumPy
+Pillow
+Google Colab
+GitHub
+
+#Project Architecture
+User Image Upload
+        ↓
+Image Preprocessing
+        ↓
+Pre-trained CNN (MobileNetV2)
+        ↓
+Custom Classification Head
+        ↓
+Softmax Output Layer
+        ↓
+Final Prediction (Cat / Dog / Horse / UNKNOWN)
+
+
+#👤 Author
+
+Name: Sareddy Lokesh Reddy
+Role: Third-Year Undergraduate Student
+Domain: Artificial Intelligence & Machine Learning
+
