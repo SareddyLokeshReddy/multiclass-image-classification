@@ -5,8 +5,7 @@ from PIL import Image
 
 # ---------------- CONFIG ----------------
 MODEL_PATH = "model/image_classifier.keras"
-CLASS_NAMES = ["cats", "dogs", "horses"]
-CONFIDENCE_THRESHOLD = 0.60  # 60%
+CONFIDENCE_THRESHOLD = 0.60
 
 # ---------------- LOAD MODEL ----------------
 @st.cache_resource
@@ -15,52 +14,52 @@ def load_model():
 
 model = load_model()
 
+# Infer class count safely
+MODEL_OUTPUTS = model.output_shape[-1]
+
+# Define class names STRICTLY based on model
+BASE_CLASSES = ["cats", "dogs", "horses"]
+
+CLASS_NAMES = BASE_CLASSES[:MODEL_OUTPUTS]
+
 # ---------------- UI ----------------
 st.set_page_config(page_title="Animal Classifier", layout="centered")
 
 st.title("🐾 Multi-Class Image Classification")
-st.markdown(
-    """
-    **Supported Classes:** Cats • Dogs • Horses  
-    **Other objects → UNKNOWN**
-    """
-)
+st.write("Cats | Dogs | Horses | Unknown")
 
 uploaded_file = st.file_uploader(
-    "📤 Upload an image",
+    "Upload an image",
     type=["jpg", "jpeg", "png"]
 )
 
 # ---------------- PREDICTION ----------------
-if uploaded_file is not None:
+if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", width=300)
 
-    # Preprocess
     img = image.resize((224, 224))
     img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
 
-    # Predict
-    predictions = model.predict(img)[0]
+    predictions = model.predict(img)
 
-    max_prob = float(np.max(predictions))
-    predicted_index = int(np.argmax(predictions))
+    probs = predictions[0]
+    max_prob = float(np.max(probs))
+    predicted_index = int(np.argmax(probs))
 
-    # UNKNOWN logic
-    if max_prob < CONFIDENCE_THRESHOLD:
+    # ABSOLUTE SAFETY CHECK
+    if predicted_index >= len(CLASS_NAMES) or max_prob < CONFIDENCE_THRESHOLD:
         predicted_class = "UNKNOWN"
     else:
         predicted_class = CLASS_NAMES[predicted_index]
 
     # ---------------- OUTPUT ----------------
-    st.subheader("🧠 Prediction Result")
-    st.success(f"**Class:** {predicted_class}")
-    st.info(f"**Confidence:** {max_prob * 100:.2f}%")
+    st.subheader("Prediction Result")
+    st.success(f"Class: {predicted_class}")
+    st.info(f"Confidence: {max_prob * 100:.2f}%")
 
-    st.subheader("📊 Raw Probabilities")
-    for cls, prob in zip(CLASS_NAMES, predictions):
-        st.write(f"{cls}: {prob * 100:.2f}%")
-
-    if predicted_class == "UNKNOWN":
-        st.warning("⚠️ Image does not belong to trained classes")
+    st.subheader("Raw Probabilities")
+    for i, prob in enumerate(probs):
+        label = CLASS_NAMES[i] if i < len(CLASS_NAMES) else f"class_{i}"
+        st.write(f"{label}: {prob * 100:.2f}%")
