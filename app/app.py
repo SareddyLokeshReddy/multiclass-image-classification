@@ -3,120 +3,99 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
-# ---------------- CONFIG ----------------
-st.set_page_config(
-    page_title="Multi-Class Image Classifier",
-    page_icon="🐾",
-    layout="centered"
-)
-
+# ==============================
+# CONFIG
+# ==============================
 MODEL_PATH = "model/image_classifier.keras"
 CLASS_NAMES = ["cats", "dogs", "horses", "unknown"]
 
-# ---------------- CUSTOM CSS ----------------
-st.markdown("""
-<style>
-body {
-    background: linear-gradient(to right, #e0f7fa, #fff3e0);
-}
+# Thresholds (VERY IMPORTANT)
+PRIMARY_THRESHOLD = 0.55     # for known classes
+FALLBACK_THRESHOLD = 0.40    # minimum acceptance
 
-.main-title {
-    font-size: 38px;
-    font-weight: bold;
-    color: #2c3e50;
-    text-align: center;
-}
-
-.sub-title {
-    font-size: 18px;
-    text-align: center;
-    color: #555;
-}
-
-.result-box {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-}
-
-.class-name {
-    font-size: 26px;
-    font-weight: bold;
-    color: #27ae60;
-}
-
-.confidence {
-    font-size: 20px;
-    color: #2980b9;
-}
-
-.prob-box {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ---------------- LOAD MODEL ----------------
+# ==============================
+# LOAD MODEL
+# ==============================
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(MODEL_PATH, compile=False)
 
 model = load_model()
 
-# ---------------- UI ----------------
-st.markdown('<div class="main-title">🐾 Multi-Class Image Classification</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Cats | Dogs | Horses | Unknown</div>', unsafe_allow_html=True)
-st.write("")
+# ==============================
+# STREAMLIT UI
+# ==============================
+st.set_page_config(page_title="Multi-Class Image Classification", layout="centered")
+
+st.markdown(
+    """
+    <h1 style='text-align: center; color: #4CAF50;'>🐾 Multi-Class Image Classification</h1>
+    <p style='text-align: center;'>Cats | Dogs | Horses | Unknown</p>
+    """,
+    unsafe_allow_html=True
+)
 
 uploaded_file = st.file_uploader(
     "📤 Upload an image",
-    type=["jpg", "png", "jpeg"]
+    type=["jpg", "jpeg", "png"]
 )
 
-if uploaded_file:
+# ==============================
+# PREDICTION LOGIC
+# ==============================
+if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    st.image(
-        image,
-        caption="📷 Uploaded Image",
-        use_column_width=True
-    )
-
-    # Preprocessing
+    # Preprocessing (MUST match training)
     img = image.resize((224, 224))
     img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
 
-    # Prediction
+    # Model Prediction
     predictions = model.predict(img)[0]
+    max_prob = np.max(predictions)
     predicted_index = np.argmax(predictions)
-    confidence = predictions[predicted_index] * 100
     predicted_class = CLASS_NAMES[predicted_index]
 
-    # Result Section
-    st.markdown('<div class="result-box">', unsafe_allow_html=True)
-    st.subheader("🔍 Prediction Result")
-    st.markdown(
-        f'<div class="class-name">Class: {predicted_class.upper()}</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        f'<div class="confidence">Confidence: {confidence:.2f}%</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
+    # ==============================
+    # UNKNOWN HANDLING (FIXED)
+    # ==============================
+    KNOWN_CLASSES = ["cats", "dogs", "horses"]
 
-    # Probability Section
-    st.subheader("📊 Class Probabilities")
-    st.markdown('<div class="prob-box">', unsafe_allow_html=True)
+    if predicted_class in KNOWN_CLASSES and max_prob >= FALLBACK_THRESHOLD:
+        final_class = predicted_class
+    else:
+        final_class = "unknown"
+
+    # ==============================
+    # DISPLAY RESULT
+    # ==============================
+    st.markdown("## 🧠 Prediction Result")
+
+    if final_class == "unknown":
+        st.error("❌ **UNKNOWN OBJECT DETECTED**")
+    else:
+        st.success(f"✅ **{final_class.upper()}** detected")
+
+    st.write(f"**Confidence:** {max_prob * 100:.2f}%")
+
+    # ==============================
+    # SHOW PROBABILITIES (DEBUG + INTERVIEW PROOF)
+    # ==============================
+    st.markdown("### 📊 Class Probabilities")
     for cls, prob in zip(CLASS_NAMES, predictions):
-        st.progress(float(prob))
-        st.write(f"**{cls.capitalize()}** : {prob * 100:.2f}%")
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.write(f"- **{cls}** : {prob * 100:.2f}%")
 
-else:
-    st.info("👆 Please upload an image to start classification.")
+# ==============================
+# FOOTER
+# ==============================
+st.markdown(
+    """
+    <hr>
+    <p style='text-align:center; font-size:14px;'>
+    Built using TensorFlow, Keras & Streamlit
+    </p>
+    """,
+    unsafe_allow_html=True
+)
