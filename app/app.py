@@ -18,7 +18,7 @@ model = load_model()
 MODEL_OUTPUTS = model.output_shape[-1]
 
 # Define class names STRICTLY based on model
-BASE_CLASSES = ["cats", "dogs", "horses"]
+BASE_CLASSES = ["cats", "dogs", "horses","unknown"]
 
 CLASS_NAMES = BASE_CLASSES[:MODEL_OUTPUTS]
 
