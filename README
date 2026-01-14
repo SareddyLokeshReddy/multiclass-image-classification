@@ -19,7 +19,7 @@ This approach makes the model more realistic and production-ready.
 I used transfer learning with a pre-trained MobileNetV2 model.
 The base model was trained on ImageNet, which helped extract strong visual features.
 I froze the base layers and added custom classification layers on top.
-I trained the model on four classes:
+
 
 Cats
 Dogs
