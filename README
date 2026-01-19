@@ -30,8 +30,7 @@ This approach makes the model more realistic and production-ready.
 
 
 
-Animal images → Cat, Dog, Horse
-Non-animal images → UNKNOWN
+
 The model no longer forces unrelated images into known classes.
 
 #🚀 Deployment
