@@ -27,7 +27,7 @@ This approach makes the model more realistic and production-ready.
 
 
 
-Training Accuracy: ~90%
+
 Validation Accuracy: ~85%
 Correctly identifies:
 Animal images → Cat, Dog, Horse
