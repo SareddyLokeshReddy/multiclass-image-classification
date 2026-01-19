@@ -28,7 +28,7 @@ This approach makes the model more realistic and production-ready.
 
 
 
-Validation Accuracy: ~85%
+
 Correctly identifies:
 Animal images → Cat, Dog, Horse
 Non-animal images → UNKNOWN
