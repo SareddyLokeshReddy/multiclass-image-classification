@@ -7,7 +7,6 @@ Most models predict an image as one of the trained classes even when the image d
 To solve this, I built a multiclass image classification model with an explicit UNKNOWN class.
 The model can correctly classify cats, dogs, and horses, and it predicts UNKNOWN for any image that does not belong to these classes, such as humans, vehicles, or objects.
 
-🎯 Motivation
 
 
 
