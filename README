@@ -9,11 +9,6 @@ The model can correctly classify cats, dogs, and horses, and it predicts UNKNOWN
 
 🎯 Motivation
 
-While testing basic classifiers, I noticed that images like a teapot or a human face were being incorrectly classified as animals.
-Instead of using confidence thresholds, I decided to train the model with an additional UNKNOWN class so it can learn to reject unrelated images.
-
-
-
 
 
 
