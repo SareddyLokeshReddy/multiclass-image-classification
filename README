@@ -1,5 +1,5 @@
 Multiclass Image Classification with Unknown Detection
-📌 About the Project
+
 
 I developed this project to solve a common problem in image classification systems — forced misclassification.
 Most models predict an image as one of the trained classes even when the image does not belong to any of them.
