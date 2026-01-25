@@ -2,8 +2,6 @@
 
 
 
-Most models predict an image as one of the trained classes even when the image does not belong to any of them.
-
 
 
 
