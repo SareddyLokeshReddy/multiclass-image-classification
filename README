@@ -19,7 +19,7 @@
 
 
 
-👉 [Live Streamlit App](https://multiclass-image-classification-c8ccgekd37syxs4aztpqgt.streamlit.app/)
+
 
 
 After training, I deployed the model using Streamlit Cloud.
