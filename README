@@ -22,7 +22,7 @@
 
 
 
-After training, I deployed the model using Streamlit Cloud.
+
 The web application allows users to:
 
 Upload an image
