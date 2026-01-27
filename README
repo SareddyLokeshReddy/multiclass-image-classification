@@ -32,18 +32,7 @@
 
 
 
-tecture
-User Image Upload
-        ↓
-Image Preprocessing
-        ↓
-Pre-trained CNN (MobileNetV2)
-        ↓
-Custom Classification Head
-        ↓
-Softmax Output Layer
-        ↓
-Final Prediction (Cat / Dog / Horse / UNKNOWN)
+
 
 
 
