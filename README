@@ -32,16 +32,7 @@
 
 
 
-Python
-TensorFlow & Keras
-MobileNetV2
-Streamlit
-NumPy
-Pillow
-Google Colab
-GitHub
-
-#Project Architecture
+tecture
 User Image Upload
         ↓
 Image Preprocessing
